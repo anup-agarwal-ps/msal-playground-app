@@ -5,17 +5,19 @@ import { EventType } from "@azure/msal-browser";
 export const RefreshHandler = ({ setAccount }) => {
   useEffect(() => {
     const initializeMsal = async () => {
-      await msalInstance.initialize();
-      const result = await msalInstance.handleRedirectPromise();
-
-      if (result && result.account) {
-        console.log(result);
-        setAccount(result.account);
-      } else {
-        const currentAccounts = msalInstance.getAllAccounts();
-        if (currentAccounts.length === 1) {
-          setAccount(currentAccounts[0]);
+      try {
+        await msalInstance.initialize();
+        const result = await msalInstance.handleRedirectPromise();
+        if (result && result.account) {
+          setAccount(result.account);
+        } else {
+          const currentAccounts = msalInstance.getAllAccounts();
+          if (currentAccounts.length === 1) {
+            setAccount(currentAccounts[0]);
+          }
         }
+      } catch (error) {
+        setAccount(null);
       }
     };
 
